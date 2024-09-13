@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ video.title }}</title>
+</head>
+<body>
+    <h1>{{ video.title }}</h1>
+    <video id="videoPlayer" controls width="600">
+        <source src="{{ video.video_file.url }}" type="video/mp4">
+        <track src="{{ video.subtitle_file.url }}" kind="subtitles" srclang="en" label="English" default>
+        Your browser does not support the video tag.
+    </video>
+
+    <h2>Search Subtitles</h2>
+    <form method="GET" action="{% url 'search_subtitles' video.id %}">
+        <input type="text" name="q" placeholder="Enter phrase" required>
+        <button type="submit">Search</button>
+    </form>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const timestamp = urlParams.get('timestamp');
+        if (timestamp) {
+            const video = document.getElementById('videoPlayer');
+            const parts = timestamp.split(':');
+            const timeInSeconds = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+            video.currentTime = timeInSeconds;
+            video.play();
+        }
+    </script>
+
+    <a href="{% url 'video_list' %}">Back to video list</a>
+</body>
+</html>
